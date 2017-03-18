@@ -1,6 +1,9 @@
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var request = new XMLHttpRequest();
 
+
+
+
 request.open('POST','https://api.kairos.com/enroll');
 
 request.setRequestHeader('Content-Type', 'application/json')
@@ -16,8 +19,8 @@ request.onreadystatechange = function () {
 };
 
 var body = {
-  'image': 'http://i2.cdn.cnn.com/cnnnext/dam/assets/140116003943-kim-jong-un-north-korea-profile-dictator-horizontal-large-gallery.jpg',
-  'subject_id': 'kimjongun',
+  'image': 'https://media.licdn.com/mpr/mpr/shrinknp_200_200/AAEAAQAAAAAAAAi0AAAAJGU5Yzc0ZjFiLTYzY2MtNDUyZC04NjZjLTc4NDEyZWVmMWU4Ng.jpg',
+  'subject_id': 'Adi',
   'gallery_name': 'mygallery'
 };
 

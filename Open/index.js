@@ -62,7 +62,7 @@ function faceRecog(u){
       isMatch();
     }
     else{
-      isNotMatch();
+      isNotMatch(u);
     }
     }
   };
@@ -76,7 +76,7 @@ function faceRecog(u){
 }
 
 
-cloudinary.uploader.upload("batman.jpg", function(result) {
+cloudinary.uploader.upload("testface2.jpg", function(result) {
   var u = result.url;
   console.log("The URL is:" +u);
   faceRecog(u);
@@ -87,6 +87,23 @@ function isMatch() {
 
 }
 
-function isNotMatch() {
+function isNotMatch(u) {
+var accountSid = '';
+var authToken = '';
+
+//require the Twilio module and create a REST client
+var client = require('twilio')(accountSid, authToken);
+
+client.messages.create({
+    to: "",
+    from: "",
+    body: "Unknown visitor: "+ u
+}, function(err, message) {
+    if(err){
+      console.log(err.message);
+    }else {
+      console.log(message.sid);
+    }
+});
 
 }

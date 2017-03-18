@@ -5,16 +5,75 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <iostream>
 #include<stdio.h>
+#include <windows.h>
 
 using namespace cv;
 using namespace std;
 
+bool checkForBurryImage(cv::Mat matImage) {
+
+	cv::Mat finalImage;
+
+
+	cv::Mat matImageGrey;
+	cv::cvtColor(matImage, matImageGrey, CV_BGRA2GRAY);
+	matImage.release();
+
+	cv::Mat newEX;
+	const int MEDIAN_BLUR_FILTER_SIZE = 15; // odd number
+	cv::medianBlur(matImageGrey, newEX, MEDIAN_BLUR_FILTER_SIZE);
+	matImageGrey.release();
+
+	cv::Mat laplacianImage;
+	cv::Laplacian(newEX, laplacianImage, CV_8U); // CV_8U
+	newEX.release();
+
+	cv::Mat laplacianImage8bit;
+	laplacianImage.convertTo(laplacianImage8bit, CV_8UC1);
+	laplacianImage.release();
+	cv::cvtColor(laplacianImage8bit, finalImage, CV_GRAY2BGRA);
+	laplacianImage8bit.release();
+
+	int rows = finalImage.rows;
+	int cols = finalImage.cols;
+	char *pixels = reinterpret_cast<char *>(finalImage.data);
+	int maxLap = -16777216;
+	for (int i = 0; i < (rows*cols); i++) {
+		if (pixels[i] > maxLap)
+			maxLap = pixels[i];
+	}
+
+	int soglia = -6118750;
+
+	pixels = NULL;
+	finalImage.release();
+
+	BOOL isBlur = (maxLap < 100) ? TRUE : FALSE;
+	return isBlur;
+}
+
+//void variance() {
+//	double mean = static_cast<double>(value_sum) / size;
+//
+//	// Calculate variance
+//	double variance = 0;
+//	for (int i = 0; i<size; ++i)
+//	{
+//		variance += (MyArray[i] - mean)*(MyArray[i] - mean) / size;
+//	}
+//}
 int main(int, char**) {
+
 	VideoCapture vcap;
-	Mat image;
+	Mat image, image_gray, LaplaceImage;
 	vector<Rect> faces;
-	/*const std::string frontalFace = "haarcascade_frontalface_default.xml";
-	const std::string eye = "haarcascade_eye.xml";*/
+	bool isBlur;
+	//Getting current path
+	DWORD nBufferLength = MAX_PATH;
+	char szCurrentDirectory[MAX_PATH + 1];
+	char fileName[] = "\\Images\\image.jpeg";
+	GetCurrentDirectory(nBufferLength, szCurrentDirectory);
+	strcat(szCurrentDirectory, fileName);
 
 	CascadeClassifier face_cascade;
 	CascadeClassifier eye_cascade;
@@ -31,24 +90,45 @@ int main(int, char**) {
 		return -1;
 	}
 
-	for (;;) {
-		if (!vcap.read(image)) {
-			cout << "No frame" << endl;
-			waitKey();
+	
+	faceDetection:
+		for (;;) {
+			if (!vcap.read(image)) {
+				cout << "No frame" << endl;
+				waitKey();
+			}
+		imageOpen:
+			imshow("Open!", image);
+			face_cascade.detectMultiScale(image, faces, 1.5, 3, 0 | CV_HAAR_SCALE_IMAGE);
+			for (size_t i = 0; i<faces.size(); i++) {
+				size_t value = 1;
+				cout << "Detecting Face RN" << endl;
+				rectangle(image, faces[i], Scalar(0, 125, 165), 2, 8, 0);
+				imshow("Open!", image);
+				/*if (faces.size() < 1000) {
+					value = faces.size() + 1;
+				}*/
+				/*faces.resize(value);*/
+				/*if (faces.size() == 1000) {*/
+					imwrite(szCurrentDirectory, image);
+					//cvtColor(image, image_gray, CV_BGR2GRAY);
+					//Laplacian(image_gray, LaplaceImage, CV_64F);
+					isBlur = checkForBurryImage(image);
+					//C:\Users\Abilas\Documents\Visual Studio 2015\Projects\Open\Open
+					if (!isBlur) {
+						system("node index.js");
+						goto finish;
+					}
+					
+				//}
+			}
+			if (faces.size() == 0) {
+				cout << "No face detected" << endl;
+			}
+			waitKey(1);
 		}
 
-		imshow("Open!", image);
-		face_cascade.detectMultiScale(image, faces, 1.5, 3, 0 | CV_HAAR_SCALE_IMAGE);
-		for (size_t i = 0; i<faces.size(); i++) {
-			cout << "Detecting Face RN" << endl;
-			rectangle(image, faces[i], Scalar(0, 125, 165), 2, 8, 0);
-			imshow("Open!", image);
-			cin;
-		}
-		if (faces.size() == 0) {
-			cout << "No face detected" << endl;
-		}
-		waitKey(1);
-		//if (cv::waitKey(1) >= 0) break;
-	}
+	finish:
+		cout << "Comparing.." << endl;
+		waitKey(0);
 }

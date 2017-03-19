@@ -94,8 +94,8 @@ int main(int, char**) {
 				imshow("Open!", image);
 					imwrite(szCurrentDirectory, image);
 					isBlur = checkForBurryImage(image);
-					//C:\Users\Abilas\Documents\Visual Studio 2015\Projects\Open\Open
 					if (!isBlur) {
+						cout << "Comparing" << endl;
 						system("node index.js");
 						goto finish;
 					}
@@ -107,6 +107,5 @@ int main(int, char**) {
 		}
 
 	finish:
-		cout << "Comparing.." << endl;
 		waitKey(0);
 }

@@ -1,3 +1,4 @@
+require('dotenv').config();
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var request = new XMLHttpRequest();
 
@@ -7,9 +8,9 @@ var cloudinary = require('cloudinary');
 var url;
 
 cloudinary.config({
-  cloud_name: 'dqickes7k',
-  api_key: '455556278463497',
-  api_secret: 'd_VQbBuCTrua5LnKnlxPP6g0C7k'
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET
 });
 
 // request.open('POST','https://api.kairos.com/enroll');
@@ -88,15 +89,15 @@ function isMatch() {
 }
 
 function isNotMatch(u) {
-var accountSid = '';
-var authToken = '';
+var accountSid = process.env.TWILIO_ID;
+var authToken = process.env.TWILIO_TOKEN;
 
 //require the Twilio module and create a REST client
 var client = require('twilio')(accountSid, authToken);
 
 client.messages.create({
-    to: "",
-    from: "",
+    to: process.env.TO_NUMBER,
+    from: process.env.FROM_NUMBER,
     body: "Unknown visitor: "+ u
 }, function(err, message) {
     if(err){

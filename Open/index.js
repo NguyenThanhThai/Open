@@ -76,7 +76,7 @@ function faceRecog(u){
 }
 
 
-cloudinary.uploader.upload("testface2.jpg", function(result) {
+cloudinary.uploader.upload("/Images/image.jpg", function(result) {
   var u = result.url;
   console.log("The URL is:" +u);
   faceRecog(u);
@@ -95,8 +95,8 @@ var authToken = '';
 var client = require('twilio')(accountSid, authToken);
 
 client.messages.create({
-    to: "",
-    from: "",
+    to: "+14165096362",
+    from: "+16475591322",
     body: "Unknown visitor: "+ u
 }, function(err, message) {
     if(err){

@@ -48,20 +48,10 @@ bool checkForBurryImage(cv::Mat matImage) {
 	pixels = NULL;
 	finalImage.release();
 
-	BOOL isBlur = (maxLap < 100) ? TRUE : FALSE;
+	BOOL isBlur = (maxLap < 117) ? FALSE : TRUE;
 	return isBlur;
 }
 
-//void variance() {
-//	double mean = static_cast<double>(value_sum) / size;
-//
-//	// Calculate variance
-//	double variance = 0;
-//	for (int i = 0; i<size; ++i)
-//	{
-//		variance += (MyArray[i] - mean)*(MyArray[i] - mean) / size;
-//	}
-//}
 int main(int, char**) {
 
 	VideoCapture vcap;
@@ -71,7 +61,7 @@ int main(int, char**) {
 	//Getting current path
 	DWORD nBufferLength = MAX_PATH;
 	char szCurrentDirectory[MAX_PATH + 1];
-	char fileName[] = "\\Images\\image.jpeg";
+	char fileName[] = "\\Images\\image.jpg";
 	GetCurrentDirectory(nBufferLength, szCurrentDirectory);
 	strcat(szCurrentDirectory, fileName);
 
@@ -105,22 +95,13 @@ int main(int, char**) {
 				cout << "Detecting Face RN" << endl;
 				rectangle(image, faces[i], Scalar(0, 125, 165), 2, 8, 0);
 				imshow("Open!", image);
-				/*if (faces.size() < 1000) {
-					value = faces.size() + 1;
-				}*/
-				/*faces.resize(value);*/
-				/*if (faces.size() == 1000) {*/
 					imwrite(szCurrentDirectory, image);
-					//cvtColor(image, image_gray, CV_BGR2GRAY);
-					//Laplacian(image_gray, LaplaceImage, CV_64F);
 					isBlur = checkForBurryImage(image);
 					//C:\Users\Abilas\Documents\Visual Studio 2015\Projects\Open\Open
 					if (!isBlur) {
 						system("node index.js");
 						goto finish;
 					}
-					
-				//}
 			}
 			if (faces.size() == 0) {
 				cout << "No face detected" << endl;

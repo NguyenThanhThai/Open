@@ -43,8 +43,8 @@ function faceRecog(u){
   request.open('POST','https://api.kairos.com/recognize');
 
   request.setRequestHeader('Content-Type', 'application/json')
-  request.setRequestHeader('app_id', 'd63ffed3');
-  request.setRequestHeader('app_key', 'e7e0da0ec38c0e67a52894e2698b99d8');
+  request.setRequestHeader('app_id', process.env.KAIROS_ID);
+  request.setRequestHeader('app_key', process.env.KAIROS_KEY);
 
   request.onreadystatechange = function () {
     if (this.readyState ===4){
@@ -77,7 +77,7 @@ function faceRecog(u){
 }
 
 
-cloudinary.uploader.upload("testface2.jpg", function(result) {
+cloudinary.uploader.upload("/Images/image.jpg", function(result) {
   var u = result.url;
   console.log("The URL is:" +u);
   faceRecog(u);
@@ -98,6 +98,7 @@ var client = require('twilio')(accountSid, authToken);
 client.messages.create({
     to: process.env.TO_NUMBER,
     from: process.env.FROM_NUMBER,
+
     body: "Unknown visitor: "+ u
 }, function(err, message) {
     if(err){

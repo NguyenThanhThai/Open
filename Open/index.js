@@ -1,3 +1,4 @@
+require('dotenv').config();
 var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 var request = new XMLHttpRequest();
 
@@ -7,9 +8,9 @@ var cloudinary = require('cloudinary');
 var url;
 
 cloudinary.config({
-  cloud_name: 'dqickes7k',
-  api_key: '455556278463497',
-  api_secret: 'd_VQbBuCTrua5LnKnlxPP6g0C7k'
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET
 });
 
 // request.open('POST','https://api.kairos.com/enroll');
@@ -42,8 +43,8 @@ function faceRecog(u){
   request.open('POST','https://api.kairos.com/recognize');
 
   request.setRequestHeader('Content-Type', 'application/json')
-  request.setRequestHeader('app_id', 'd63ffed3');
-  request.setRequestHeader('app_key', 'e7e0da0ec38c0e67a52894e2698b99d8');
+  request.setRequestHeader('app_id', process.env.KAIROS_ID);
+  request.setRequestHeader('app_key', process.env.KAIROS_KEY);
 
   request.onreadystatechange = function () {
     if (this.readyState ===4){
@@ -76,7 +77,7 @@ function faceRecog(u){
 }
 
 
-cloudinary.uploader.upload("/Images/image.jpg", function(result) {
+cloudinary.uploader.upload("image.jpg", function(result) {
   var u = result.url;
   console.log("The URL is:" +u);
   faceRecog(u);
@@ -88,15 +89,16 @@ function isMatch() {
 }
 
 function isNotMatch(u) {
-var accountSid = '';
-var authToken = '';
+var accountSid = process.env.TWILIO_ID;
+var authToken = process.env.TWILIO_TOKEN;
 
 //require the Twilio module and create a REST client
 var client = require('twilio')(accountSid, authToken);
 
 client.messages.create({
-    to: "+14165096362",
-    from: "+16475591322",
+    to: process.env.TO_NUMBER,
+    from: process.env.FROM_NUMBER,
+
     body: "Unknown visitor: "+ u
 }, function(err, message) {
     if(err){

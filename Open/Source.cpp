@@ -13,8 +13,6 @@ using namespace std;
 bool checkForBurryImage(cv::Mat matImage) {
 
 	cv::Mat finalImage;
-
-
 	cv::Mat matImageGrey;
 	cv::cvtColor(matImage, matImageGrey, CV_BGRA2GRAY);
 	matImage.release();
@@ -48,7 +46,7 @@ bool checkForBurryImage(cv::Mat matImage) {
 	pixels = NULL;
 	finalImage.release();
 
-	BOOL isBlur = (maxLap < 117) ? FALSE : TRUE;
+	BOOL isBlur = (maxLap < 115) ? FALSE : TRUE;
 	return isBlur;
 }
 
@@ -61,7 +59,7 @@ int main(int, char**) {
 	//Getting current path
 	DWORD nBufferLength = MAX_PATH;
 	char szCurrentDirectory[MAX_PATH + 1];
-	char fileName[] = "\\Images\\image.jpg";
+	char fileName[] = "\\image.jpg";
 	GetCurrentDirectory(nBufferLength, szCurrentDirectory);
 	strcat(szCurrentDirectory, fileName);
 
@@ -80,7 +78,6 @@ int main(int, char**) {
 		return -1;
 	}
 
-	
 	faceDetection:
 		for (;;) {
 			if (!vcap.read(image)) {
